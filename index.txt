@@ -1158,7 +1158,7 @@
       return { success: true };
     }
 
-    // Pemanggilan server GAS cerdas - Menjamin anti-error pada browser client-side
+    // Pemanggilan server GAS cerdas - Menjamin anti-error pada browser client-side & mendukung reverse proxy
     function gasRun(funcName, ...args) {
       return new Promise((resolve) => {
         const runFallback = () => {
@@ -1189,7 +1189,28 @@
             runFallback();
           }
         } else {
-          runFallback();
+          // Solusi murni tanpa iframe: panggil API gateway Cloudflare Worker secara dinamis
+          fetch('/api', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+              function: funcName,
+              arguments: args
+            })
+          })
+          .then(res => {
+            if (!res.ok) throw new Error('API gateway returned error status');
+            return res.json();
+          })
+          .then(data => {
+            resolve(data);
+          })
+          .catch(err => {
+            console.warn(`Panggilan proxy /api gagal untuk fungsi "${funcName}", beralih ke emulator lokal:`, err);
+            runFallback();
+          });
         }
       });
     }
