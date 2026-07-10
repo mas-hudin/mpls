@@ -1,6 +1,6 @@
 {
-  "short_name": "MPLS",
-  "name": "MPLS",
+  "short_name": "mpls",
+  "name": "mpls",
   "icons": [
     {
       "src": "icon-192.png",

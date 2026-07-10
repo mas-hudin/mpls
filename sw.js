@@ -1,4 +1,4 @@
-const CACHE_NAME = 'MPLS-v1';
+const CACHE_NAME = 'mpls';
 const ASSETS_TO_CACHE = [
   'index.html',
   'manifest.json',
